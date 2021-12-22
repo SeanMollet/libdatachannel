@@ -41,7 +41,7 @@ using namespace std::placeholders;
 
 WebSocket::WebSocket(optional<Configuration> optConfig, certificate_ptr certificate)
     : config(optConfig ? std::move(*optConfig) : Configuration()),
-      mCertificate(std::move(certificate)), mIsSecure(mCertificate != nullptr),
+      mCertificate((config.certificatePemFile && config.keyPemFile) ? std::make_shared<Certificate>(Certificate::FromFile(*config.certificatePemFile, *config.keyPemFile, config.keyPemPass.value_or(""))) : std::move(certificate)), mIsSecure(mCertificate != nullptr),
       mRecvQueue(RECV_QUEUE_LIMIT, message_size_func) {
 	PLOG_VERBOSE << "Creating WebSocket";
 }
