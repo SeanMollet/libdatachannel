@@ -310,7 +310,8 @@ TlsTransport::TlsTransport(shared_ptr<TcpTransport> lower, optional<string> host
 			auto [x509, pkey] = certificate->credentials();
 			SSL_CTX_use_certificate(mCtx, x509);
 			SSL_CTX_use_PrivateKey(mCtx, pkey);
-		} else {
+		}
+		if (mIsClient) {
 			if (!SSL_CTX_set_default_verify_paths(mCtx)) {
 				PLOG_WARNING << "SSL root CA certificates unavailable";
 			}
